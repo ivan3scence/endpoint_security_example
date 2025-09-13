@@ -12,11 +12,26 @@ message FileCreated {
   string file_path = 1;
 }
 
+message FileRename {
+  string file_path = 1;
+}
+
+message FileClone {
+  string file_path = 1;
+}
+
+message FileCopy {
+  string file_path = 1;
+}
+
 message Event {
   string process_path = 1;
   oneof data {
     ProcessExec process_exec = 2;
-    FileOpen file_open = 3;
+    FileOpen    file_open = 3;
     FileCreated file_created = 4;
+    FileRename  file_rename = 5;
+    FileClone   file_clone = 6;
+    FileCopy    file_copy = 7;
   }
 }
