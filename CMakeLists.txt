@@ -7,8 +7,8 @@ add_compile_options(-Wall -Wextra -Werror -Wno-format-security)
 
 option(DEBUG "Compile with debug symbols" OFF)
 if (DEBUG)
-  add_compile_options(-O0 -g)
-  add_link_options(-O0 -g)
+  add_compile_options(-O0 -gdwarf-4)
+  add_link_options(-O0 -gdwarf-4)
 endif(DEBUG)
 
 option(ADDR_SAN "Compile with address sanitizer" OFF)
@@ -75,9 +75,31 @@ if (TEST)
 
   enable_testing()
   find_package(GTest CONFIG REQUIRED)
-  add_executable(${TEST_TARGET} ${TEST_SOURCES})
-  target_link_libraries(${TEST_TARGET} PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
-  target_include_directories(${TEST_TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/inc)
+  add_executable(${TEST_TARGET}
+    ${TEST_SOURCES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Storage.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Logger.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ESClient.cpp
+    ${PROTOBUF_GENERATED_SOURCES}
+  )
+  target_link_libraries(${TEST_TARGET} PRIVATE
+    ${ENDPOINT_SECURITY_FRAMEWORK}
+    ${FOUNDATION_FRAMEWORK}
+    GTest::gtest
+    GTest::gtest_main
+    GTest::gmock
+    GTest::gmock_main
+    protobuf::libprotobuf
+  )
+  target_include_directories(${TEST_TARGET} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/tst
+    ${CMAKE_CURRENT_BINARY_DIR}
+  )
+  add_custom_command(TARGET ${TEST_TARGET} POST_BUILD
+    COMMAND codesign --force --sign - --entitlements ${CMAKE_SOURCE_DIR}/entitlements.plist ${CMAKE_BINARY_DIR}/${TEST_TARGET}
+    COMMENT "Signing the executable with ad-hoc signature"
+  )
 
   include(GoogleTest)
   gtest_discover_tests(${TEST_TARGET})
@@ -102,6 +124,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND codesign --force --sign - --entitlements ${CMAKE_SOURCE_DIR}/entitlements.plist ${CMAKE_BINARY_DIR}/${PROJECT_NAME}
-    COMMENT "Signing the executable with ad-hoc signature"
+  COMMAND codesign --force --sign - --entitlements ${CMAKE_SOURCE_DIR}/entitlements.plist ${CMAKE_BINARY_DIR}/${PROJECT_NAME}
+  COMMENT "Signing the executable with ad-hoc signature"
 )

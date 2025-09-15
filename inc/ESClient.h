@@ -51,16 +51,14 @@ public:
     ~ESClient() {
         LOG_INFO("destructing ESF type = %d\n", collectingType);
 
-        {
-            std::lock_guard l(mutex);
-            if (localStorage.size()) {
-                Storage::Locate().DumpEvents(localStorage);
-            }
-        }
-
         es_unsubscribe(client, &collectingType, 1);
         es_delete_client(client);
         client = nullptr;
+
+        std::lock_guard l(mutex);
+        if (localStorage.size()) {
+            Storage::Locate().DumpEvents(localStorage);
+        }
     };
 
 private:
@@ -68,13 +66,12 @@ private:
     es_client_t             *client;
     es_event_type_t         collectingType;
     static constexpr size_t CLIENT_STORAGE_SIZE = 512;
-    std::list<Event>      localStorage;
+    std::list<Event>        localStorage;
 
     Event parseMessage(const es_message_t *msg);
     template<es_event_type_t EventType>
     int setPrivateInfo(Event &, const es_message_t *);
     int setCommonInfo(Event& message, const es_message_t *msg);
-
 
     es_handler_block_t      msgHandler =
                                      ^(es_client_t *, const es_message_t *msg) {
