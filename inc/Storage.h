@@ -1,3 +1,8 @@
+/**
+ * @file Storage.h
+ * @brief Header file for Storage class
+ */
+
 #pragma once
 #include <fstream>
 #include <string>
@@ -13,6 +18,15 @@
 
 namespace fs = std::filesystem;
 
+/**
+ * @class Storage
+ * @brief A class for using disk storage for ESF events.
+ *
+ * This class provides API for dumping events to disk
+ * and for reading disk storage. This class is a singleton,
+ * use Locate method to work with it.
+ *
+ */
 class Storage {
 public:
     Storage(const Storage&) = delete;
@@ -23,6 +37,7 @@ public:
     static Storage& Locate();
     int SetUp(const std::string& storagePath);
     int SetDown();
+
     int DumpEvents(const std::list<Event>& events);
     int PrintStorage() const;
     std::list<Event> ReadStorage() const;

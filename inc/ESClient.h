@@ -1,3 +1,8 @@
+/**
+ * @file ESClient.h
+ * @brief Header file for ESCLient class
+ */
+
 #pragma once
 #include <iostream>
 #include <exception>
@@ -10,6 +15,13 @@
 #include <Storage.h>
 
 
+/**
+ * @class ESClient
+ * @brief A class for using Endpoint Security Framework.
+ *
+ * This class allows to use ESF clients.
+ *
+ */
 class ESClient {
 public:
     ESClient(const ESClient&) = delete;
@@ -76,6 +88,13 @@ private:
     int setPrivateInfo(Event &, const es_message_t *);
     int setCommonInfo(Event& message, const es_message_t *msg);
 
+    /**
+    * @brief Handler that is called when ESF client
+    * caught a subscribed event.
+    * Handler parses message, depending on its type and
+    * stores it in local buffer and if it is filled up
+    * dumps all events from local buffer to disk.
+     */
     es_handler_block_t      msgHandler =
                                      ^(es_client_t *, const es_message_t *msg) {
         es_retain_message(msg);

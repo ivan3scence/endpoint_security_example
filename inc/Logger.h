@@ -1,7 +1,21 @@
+/**
+ * @file Logger.h
+ * @brief Header file for Logger class
+ */
+
 #pragma once
 #include <mutex>
 #include <unistd.h>
 
+/**
+ * @class Logger
+ * @brief A class for logging.
+ *
+ * This class provides logging API which can be used
+ * from any place of the project. It is a singleton class.
+ * To log anything just use macros LOG_TRACE, LOG_INFO, LOG_ERROR.
+ *
+ */
 class Logger {
 public:
 

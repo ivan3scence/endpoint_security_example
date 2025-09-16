@@ -107,6 +107,28 @@ if (TEST)
   gtest_discover_tests(${TEST_TARGET})
 endif(TEST)
 
+
+
+#####################################
+###############DOXY##################
+#####################################
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+  set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
+  set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+  set(DOXYGEN_TARGET docs)
+  
+  configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+  
+  add_custom_target(${DOXYGEN_TARGET}
+    COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Generating API documentation with Doxygen"
+    VERBATIM
+  )
+else()
+  message("Can not find doxygen!")
+endif()
 #####################################
 #####################################
 
@@ -117,6 +139,11 @@ find_package(nlohmann_json CONFIG REQUIRED)
 add_executable(${PROJECT_NAME} ${SOURCES} ${PROTOBUF_GENERATED_SOURCES})
 
 add_dependencies(${PROJECT_NAME} ${PROTO_TARGET})
+
+option(DOCS "Make docs" OFF)
+if (DOCS)
+  add_dependencies(${PROJECT_NAME} ${DOXYGEN_TARGET})
+endif (DOCS)
 
 target_include_directories(${PROJECT_NAME}
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc

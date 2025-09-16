@@ -69,6 +69,11 @@ int Storage::SetUp(const std::string& storagePath) {
     return 0;
 };
 
+/**
+* @warning It is important to destruct ZeroCopyOutputstream
+* before closing the ofstream, because of internal buffering of the first
+* otherwise last bytes will be lost!
+*/
 int Storage::SetDown() {
     if (zeroCopyOs) {
         zeroCopyOs.reset();
@@ -81,6 +86,12 @@ int Storage::SetDown() {
     return 0;
 };
 
+/**
+* @brief Stores events on disk.
+*
+* This method writing all the messages in events
+* to ZeroCopyOutputstream using length prefix.
+*/
 int Storage::DumpEvents(const std::list<Event>& messages) {
     std::lock_guard l(mutex);
 

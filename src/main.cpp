@@ -10,7 +10,7 @@
 
 static std::atomic_bool working = true;
 
-const static es_event_type_t events[] = {
+static constexpr es_event_type_t events[] = {
     ES_EVENT_TYPE_NOTIFY_EXEC,
     ES_EVENT_TYPE_NOTIFY_WRITE,
     ES_EVENT_TYPE_NOTIFY_CREATE,
