@@ -1,6 +1,6 @@
 PROJECT_NAME           = "@CMAKE_PROJECT_NAME@"
 PROJECT_NUMBER         = "@PROJECT_VERSION@"
-PROJECT_BRIEF          = "Endpoint Section Framework example"
+PROJECT_BRIEF          = "Endpoint Security Framework example"
 
 INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@ @CMAKE_CURRENT_SOURCE_DIR@/README.md
 OUTPUT_DIRECTORY       = @CMAKE_CURRENT_BINARY_DIR@/docs

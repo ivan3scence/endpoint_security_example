@@ -29,10 +29,10 @@ find_library(ENDPOINT_SECURITY_FRAMEWORK EndpointSecurity)
 find_library(FOUNDATION_FRAMEWORK Foundation)
 
 if(NOT ENDPOINT_SECURITY_FRAMEWORK)
-  message(FATAL_ERROR "EndpointSecurity framework not found")
+  message(FATAL_ERROR "Endpoint Security framework not found")
 endif()
 
-file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR} /events.proto)
+file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h)
 

@@ -25,12 +25,12 @@ void sigHandler(int) {
 
 int printUsage(char *progName, int code) {
     std::cerr << "Usage: " << progName << " [Options] STORAGE_PATH\n\n"
-              << "\tSTORAGE_PATH - path to db file where to store protobuf"
+              << "\tSTORAGE_PATH - path to db file where to store protobuf "
                  "messages or which to print out.\n\n"
               << "Options:\n"
               << "\t-h,--help\t\tShow this message\n"
               << "\t-p,--print\t\tPrint out storage file\n"
-              << "\t-v,--verboose\t\tEnable logging\n";
+              << "\t-v,--verbose\t\tEnable logging\n";
 
     return code;
 }
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
         std::string arg = argv[i];
         if ((arg == "-h") || (arg == "--help")) {
             return printUsage(argv[0], 0);
-        } else if ((arg == "-v") || (arg == "--verboose")) {
+        } else if ((arg == "-v") || (arg == "--verbose")) {
             logLevel = Logger::TRACE;
         } else if ((arg == "-p" || arg == "--print")) {
             if (i + 1 == argc)
