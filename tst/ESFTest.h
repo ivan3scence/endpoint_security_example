@@ -19,12 +19,10 @@ protected:
 
     void SetUp() {
         testFile = fs::current_path().string() + "/esf_testfile";
-        Storage::Locate().SetUp(testStorage);
     };
 
     void TearDown() {
         std::remove(testFile.c_str());
-        Storage::Locate().SetDown();
         std::remove(testStorage.c_str());
     }
 

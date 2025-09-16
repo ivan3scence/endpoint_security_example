@@ -6,12 +6,14 @@ class Logger {
 public:
 
 enum LogLevel {
+    TRACE,
     INFO,
     ERROR
 };
 
 #define LOG_ERROR(fmt, ...) Logger::Locate().Log(Logger::ERROR, fmt, ##__VA_ARGS__);
 #define LOG_INFO(fmt, ...) Logger::Locate().Log(Logger::INFO, fmt, ##__VA_ARGS__);
+#define LOG_TRACE(fmt, ...) Logger::Locate().Log(Logger::TRACE, fmt, ##__VA_ARGS__);
 
     Logger(const Logger&) = delete;
     Logger(Logger&&) = delete;
@@ -19,6 +21,7 @@ enum LogLevel {
     ~Logger() = default;
 
     static Logger& Locate();
+
     template<typename ...Args>
     void Log(LogLevel level, const char *fmt, Args&&... args) {
         std::lock_guard l(mutex);

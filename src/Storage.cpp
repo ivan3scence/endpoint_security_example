@@ -59,7 +59,12 @@ int Storage::SetUp(const std::string& storagePath) {
 
     zeroCopyOs = std::make_unique<google::protobuf::io::OstreamOutputStream>(&storageOs);
 
-    path = fs::path(storagePath);
+    try {
+        path = fs::path(storagePath);
+    } catch (std::exception& ex) {
+        LOG_ERROR("Failed to make path for storage: %s!\n", ex.what());
+        return -1;
+    }
 
     return 0;
 };
@@ -98,17 +103,17 @@ std::list<Event> Storage::ReadStorage() const {
     bool clean_eof;
     std::list<Event> messages;
 
-    int fd = open(path.c_str(), O_RDONLY);
-    if (fd < 0) {
+    std::ifstream input(path, std::ios::in | std::ios::binary);
+    if (!input.is_open()) {
         LOG_ERROR("Failed to open storage file: %s!\n", path.c_str());
         return {};
     }
 
-    google::protobuf::io::ZeroCopyInputStream *input = new google::protobuf::io::FileInputStream(fd);
+    google::protobuf::io::ZeroCopyInputStream *zeroCopyIs = new google::protobuf::io::IstreamInputStream(&input);
 
     while (1) {
         Event m;
-        if (google::protobuf::util::ParseDelimitedFromZeroCopyStream(&m, input, &clean_eof)) {
+        if (google::protobuf::util::ParseDelimitedFromZeroCopyStream(&m, zeroCopyIs, &clean_eof)) {
             messages.push_back(m);
         } else {
             if (!clean_eof) {
@@ -118,7 +123,7 @@ std::list<Event> Storage::ReadStorage() const {
         }
     }
 
-    delete input;
+    delete zeroCopyIs;
 
     return messages;
 }
@@ -127,6 +132,7 @@ int Storage::PrintStorage() const {
     std::list<Event> list = ReadStorage();
 
     if (list.size() == 0) {
+        LOG_ERROR("Empty storage!\n");
         return -1;
     }
 

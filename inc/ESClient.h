@@ -12,6 +12,9 @@
 
 class ESClient {
 public:
+    ESClient(const ESClient&) = delete;
+    ESClient(ESClient&&) = delete;
+    ESClient& operator = (const ESClient&) = delete;
     ESClient(const es_event_type_t type) :
              client(nullptr), collectingType(type) {
         auto res = es_new_client(&client, msgHandler);
@@ -45,11 +48,11 @@ public:
         }
 
         es_subscribe(client, &collectingType, 1);
-        LOG_INFO("Listening for ESF %d\n", collectingType);
+        LOG_TRACE("Listening for ESF %d\n", collectingType);
     };
 
     ~ESClient() {
-        LOG_INFO("destructing ESF type = %d\n", collectingType);
+        LOG_TRACE("destructing ESF type = %d\n", collectingType);
 
         es_unsubscribe(client, &collectingType, 1);
         es_delete_client(client);

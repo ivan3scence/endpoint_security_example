@@ -5,23 +5,25 @@ set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_CXX_STANDARD 20)
 add_compile_options(-Wall -Wextra -Werror -Wno-format-security)
 
-option(DEBUG "Compile with debug symbols" OFF)
-if (DEBUG)
-  add_compile_options(-O0 -gdwarf-4)
-  add_link_options(-O0 -gdwarf-4)
-endif(DEBUG)
-
 option(ADDR_SAN "Compile with address sanitizer" OFF)
 if (ADDR_SAN)
   add_compile_options(-fsanitize=address)
   add_link_options(-fsanitize=address)
+  set(DEBUG TRUE)
 endif(ADDR_SAN)
 
 option(THREAD_SAN "Compile with thread sanitizer" OFF)
 if (THREAD_SAN)
   add_compile_options(-fsanitize=thread)
   add_link_options(-fsanitize=thread)
+  set(DEBUG TRUE)
 endif(THREAD_SAN)
+
+option(DEBUG "Compile with debug symbols" OFF)
+if (DEBUG)
+  add_compile_options(-O0 -gdwarf-4)
+  add_link_options(-O0 -gdwarf-4)
+endif(DEBUG)
 
 find_library(ENDPOINT_SECURITY_FRAMEWORK EndpointSecurity)
 find_library(FOUNDATION_FRAMEWORK Foundation)
@@ -104,6 +106,11 @@ if (TEST)
   include(GoogleTest)
   gtest_discover_tests(${TEST_TARGET})
 endif(TEST)
+
+#####################################
+#####################################
+
+
 
 find_package(nlohmann_json CONFIG REQUIRED)
 

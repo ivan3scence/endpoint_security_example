@@ -10,7 +10,7 @@ int ESClient::setCommonInfo(Event& message, const es_message_t *msg) {
     message.set_process_path(std::string(msg->process->executable->path.data,
                              msg->process->executable->path.length));
 
-    LOG_INFO("proc: %s\n", message.process_path().c_str());
+    LOG_TRACE("Process: %s\n", message.process_path().c_str());
     return 0;
 };
 
@@ -33,7 +33,7 @@ int ESClient::setPrivateInfo<ES_EVENT_TYPE_NOTIFY_EXEC>(Event &message, const es
                                  exec->target->executable->path.length));
     *message.mutable_process_exec() = pe;
 
-    LOG_INFO("exec: %s\n", message.process_exec().file_path().c_str());
+    LOG_TRACE("exec: %s\n", message.process_exec().file_path().c_str());
 
     return 0;
 };
@@ -51,7 +51,7 @@ int ESClient::setPrivateInfo<ES_EVENT_TYPE_NOTIFY_WRITE>(Event &message, const e
                                  write->target->path.length));
     *message.mutable_file_open() = fo;
 
-    LOG_INFO("opened(writing): %s\n", message.file_open().file_path().c_str());
+    LOG_TRACE("open(for writing): %s\n", message.file_open().file_path().c_str());
 
     return 0;
 };
@@ -85,7 +85,7 @@ int ESClient::setPrivateInfo<ES_EVENT_TYPE_NOTIFY_CREATE>(Event &message, const 
     fc.set_file_path(std::string(path->data, path->length));
     *message.mutable_file_created() = fc;
 
-    LOG_INFO("created: %s\n", message.file_created().file_path().c_str());
+    LOG_TRACE("created: %s\n", message.file_created().file_path().c_str());
 
     return 0;
 };
@@ -119,7 +119,7 @@ int ESClient::setPrivateInfo<ES_EVENT_TYPE_NOTIFY_RENAME>(Event &message, const 
     fr.set_file_path(std::string(path->data, path->length));
     *message.mutable_file_rename() = fr;
 
-    LOG_INFO("rename: %s\n", message.file_rename().file_path().c_str());
+    LOG_TRACE("rename: %s\n", message.file_rename().file_path().c_str());
 
     return 0;
 };
@@ -137,7 +137,7 @@ int ESClient::setPrivateInfo<ES_EVENT_TYPE_NOTIFY_CLONE>(Event &message, const e
                                  clone->target_name.length));
     *message.mutable_file_clone() = fc;
 
-    LOG_INFO("cloned: %s\n", message.file_clone().file_path().c_str());
+    LOG_TRACE("clone: %s\n", message.file_clone().file_path().c_str());
 
     return 0;
 };
@@ -155,7 +155,7 @@ int ESClient::setPrivateInfo<ES_EVENT_TYPE_NOTIFY_COPYFILE>(Event &message, cons
                                  copyfile->target_name.length));
     *message.mutable_file_copy() = fc;
 
-    LOG_INFO("copied: %s\n", message.file_copy().file_path().c_str());
+    LOG_TRACE("copy: %s\n", message.file_copy().file_path().c_str());
 
     return 0;
 };

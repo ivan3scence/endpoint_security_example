@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
         if ((arg == "-h") || (arg == "--help")) {
             return printUsage(argv[0], 0);
         } else if ((arg == "-v") || (arg == "--verboose")) {
-            logLevel = Logger::INFO;
+            logLevel = Logger::TRACE;
         } else if ((arg == "-p" || arg == "--print")) {
             if (i + 1 == argc)
                 return printUsage(argv[0], 1);
@@ -77,10 +77,15 @@ int main(int argc, char **argv) {
 
     {
         std::list<std::unique_ptr<ESClient>> clients;
-        for (const auto e : events) {
-            clients.push_back(std::make_unique<ESClient>(e));
+        try {
+            for (const auto e : events) {
+                clients.push_back(std::make_unique<ESClient>(e));
+            }
+        } catch (std::exception& ex) {
+            LOG_ERROR("\nCaught exception while ESF client startup: %s!\n",
+                      ex.what());
+            return 1;
         }
-
 
         while (working) {
             std::this_thread::sleep_for(std::chrono::seconds(1));

@@ -1,14 +1,15 @@
 #include <ESFTest.h>
-#include <sys/wait.h>
+
 
 TEST_F(ESFTest, openWrite) {
+    Storage::Locate().SetUp(testStorage);
+
     {
         int fd =  open(testFile.c_str(), O_CREAT);
         EXPECT_NE(fd, -1) << "Failed to create test file!";
         close(fd);
 
         ESClient cl(ES_EVENT_TYPE_NOTIFY_WRITE);
-        sleep(5);
 
         fd =  open(testFile.c_str(), O_WRONLY);
         EXPECT_NE(fd, -1) << "Failed to open test file!";
@@ -17,8 +18,10 @@ TEST_F(ESFTest, openWrite) {
         EXPECT_EQ(write(fd, testBuf, sizeof(testBuf)), sizeof(testBuf)) << "Failed to write to the file!";
 
         close(fd);
-        sleep(5);
+        sleep(1);
     }
+
+    Storage::Locate().SetDown();
 
     auto messages = Storage::Locate().ReadStorage();
     bool found = false;
